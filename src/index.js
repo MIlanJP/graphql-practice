@@ -4,10 +4,11 @@ import { GraphQLServer } from "graphql-yoga";
 
 const typeDefs = `
 type Query {
-    hello: String!
+    id: ID!
     name: String!
-    location: String!
-
+    age: Int!
+    single: Boolean!
+    weight: Float
 }
 `;
 
@@ -15,15 +16,22 @@ type Query {
 
 const resolvers = {
   Query: {
-    hello() {
-      return "This is My First Query!!";
+    id(){
+        return "1001212"
     },
-    name() {
-      return "My Name is Milan";
+    name(){
+        return "Milan"
     },
-    location(){
-        return "I Stay In Bangalore"
-    }
+    age(){
+        return 27
+    },
+    single(){
+        return true
+    },
+    weight(){
+        return null
+    },
+
   },
 };
 
