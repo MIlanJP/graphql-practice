@@ -25,7 +25,7 @@ const typeDefs = `
 type Query {
 me: User!
 film: Movie!
-users:[User!]
+users(query:String):[User!]
 posts:Posts!
 listofBooks:[String!]!
 greeting(name:String,location:String): String!
@@ -58,8 +58,13 @@ type User{
 
 const resolvers = {
   Query: {
-      users(){
-          return users
+      users(parent, args, ctx, info){
+          if(!args.query){
+            return users
+          }
+          return users.filter(user =>{
+              return user.name.toLowerCase().includes(args.query.toLowerCase())
+          })
       },
     me() {
       return {
