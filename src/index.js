@@ -4,34 +4,31 @@ import { GraphQLServer } from "graphql-yoga";
 
 const typeDefs = `
 type Query {
-    id: ID!
-    title: String!
-    age: Int!
-    single: Boolean!
-    weight: Float
+me: User!
 }
+
+type User{
+    id: ID!
+    name: String!
+    email: String!
+    age: Int
+}
+
 `;
 
 // Resolvers
 
 const resolvers = {
   Query: {
-    id(){
-        return "1001212"
-    },
-    title(){
-        return "Milan"
-    },
-    age(){
-        return 27
-    },
-    single(){
-        return true
-    },
-    weight(){
-        return null
-    },
+    me(){
+        return{
+            id:"123",
+            name:"Milan",
+            email:"milan@gmail.com",
+            age:25
 
+        }
+    }
   },
 };
 
