@@ -5,6 +5,19 @@ import { GraphQLServer } from "graphql-yoga";
 const typeDefs = `
 type Query {
 me: User!
+film: Movie!
+posts:Posts!
+}
+
+type Movie{
+    title: String!
+    releaseYear: Int!
+    budget: Int!
+}
+type Posts{
+    title: String!
+    comments: String!
+    published: Boolean!
 }
 
 type User{
@@ -27,6 +40,20 @@ const resolvers = {
             email:"milan@gmail.com",
             age:25
 
+        }
+    },
+    film(){
+        return {
+            title: "Don",
+            releaseYear: 1980,
+            budget:50
+        }
+    },
+    posts(){
+        return {
+            title:'My First Post',
+            comments:"Hey Nice Post",
+            published:true
         }
     }
   },
