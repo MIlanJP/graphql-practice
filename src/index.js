@@ -5,7 +5,7 @@ import { GraphQLServer } from "graphql-yoga";
 const typeDefs = `
 type Query {
     id: ID!
-    name: String!
+    title: String!
     age: Int!
     single: Boolean!
     weight: Float
@@ -19,7 +19,7 @@ const resolvers = {
     id(){
         return "1001212"
     },
-    name(){
+    title(){
         return "Milan"
     },
     age(){
