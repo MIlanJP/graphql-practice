@@ -7,6 +7,9 @@ type Query {
 me: User!
 film: Movie!
 posts:Posts!
+greeting(name:String,location:String): String!
+add(firstNumber:Int!,secondNumber:Int!):Int!
+subtract(firstNumber:Int!,secondNumber:Int!):Int!
 }
 
 type Movie{
@@ -55,7 +58,20 @@ const resolvers = {
             comments:"Hey Nice Post",
             published:true
         }
-    }
+    },
+    greeting(parent,args,ctx,info){
+        if(args.name&& args.location){
+            return "Hello "+ args.name+ " you stay in " + args.location
+        }else{
+            return "Hello"
+        }
+        },
+        add(parent,args,ctx,info){
+            return args.firstNumber+args.secondNumber
+        },
+        subtract(parent,args,ctx,info){
+            return args.firstNumber-args.secondNumber
+        },
   },
 };
 
