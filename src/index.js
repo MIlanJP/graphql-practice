@@ -45,6 +45,23 @@ const posts = [
     author: "3",
   },
 ];
+const comments = [
+  {
+    id: "102",
+    text: "This worked well for me",
+    author: "3",
+  },
+  {
+    id: "103",
+    text: "Glad  you enjoyed it",
+    author: "3",
+  },
+  {
+    id: "104",
+    text: "Nice Picture",
+    author: "1",
+  },
+];
 
 // Type definitions (schema)
 const typeDefs = `
@@ -53,6 +70,7 @@ const typeDefs = `
         posts(query: String): [Post!]!
         me: User!
         post: Post!
+        comments:[Comment!]
     }
 
     type User {
@@ -60,6 +78,7 @@ const typeDefs = `
         name: String!
         email: String!
         age: Int
+        comments:[Comment!]
     }
 
     type Post {
@@ -68,6 +87,11 @@ const typeDefs = `
         body: String!
         published: Boolean!
         author:User!
+    }
+    type Comment {
+      id: ID!
+      text: String!
+      author: User!
     }
 `;
 
@@ -113,13 +137,29 @@ const resolvers = {
         published: false,
       };
     },
-
+    comments(parent, args, ctx, info) {
+      return comments;
+    },
+  },
+  Comment:{
+    author(parent, args, ctx, info){
+      return users.find(user=>{
+        return user.id === parent.author
+      })
+    }
+  },
+  User:{
+    comments(parent, args, ctx, info) {
+      return comments.filter(comment=>{
+        return comment.author===parent.id
+      })
+    }
   },
   Post: {
     author(parent, args, ctx, info) {
-      return users.find(user =>{
-        return user.id === parent.author
-      })
+      return users.find((user) => {
+        return user.id === parent.author;
+      });
     },
   },
 };
