@@ -1,108 +1,125 @@
 import { GraphQLServer } from "graphql-yoga";
 
-const users=[{
-    id:"100",
-    name:"Milan",
-    email:"milan@example.com",
-    age:25
-},
-{
-    id:"101",
-    name:"Rakesh",
-    email:"Rakesh@example.com",
-    age:27
-},{
-    id:"102",
-    name:"Michal",
-    email:"Michal@example.com",
-    age:28
-}
-]
+// Scalar types - String, Boolean, Int, Float, ID
 
-// Type defnitions (schema)
+// Demo user data
+const users = [
+  {
+    id: "1",
+    name: "Andrew",
+    email: "andrew@example.com",
+    age: 27,
+  },
+  {
+    id: "2",
+    name: "Sarah",
+    email: "sarah@example.com",
+  },
+  {
+    id: "3",
+    name: "Mike",
+    email: "mike@example.com",
+  },
+];
 
+const posts = [
+  {
+    id: "10",
+    title: "GraphQL 101",
+    body: "This is how to use GraphQL...",
+    published: true,
+    author: "2",
+  },
+  {
+    id: "11",
+    title: "GraphQL 201",
+    body: "This is an advanced GraphQL post...",
+    published: false,
+    author: "2",
+  },
+  {
+    id: "12",
+    title: "Programming Music",
+    body: "",
+    published: false,
+    author: "3",
+  },
+];
+
+// Type definitions (schema)
 const typeDefs = `
-type Query {
-me: User!
-film: Movie!
-users(query:String):[User!]
-posts:Posts!
-listofBooks:[String!]!
-greeting(name:String,location:String): String!
-add(firstNumber:Int!,secondNumber:Int!):Int!
-subtract(firstNumber:Int!,secondNumber:Int!):Int!
-}
+    type Query {
+        users(query: String): [User!]!
+        posts(query: String): [Post!]!
+        me: User!
+        post: Post!
+    }
 
-type Movie{
-    title: String!
-    releaseYear: Int!
-    budget: Int!
-}
-type Posts{
-    title: String!
-    comments: String!
-    published: Boolean!
-}
+    type User {
+        id: ID!
+        name: String!
+        email: String!
+        age: Int
+    }
 
-type User{
-    id: ID!
-    name: String!
-    email: String!
-    age: Int
-}
-
-
+    type Post {
+        id: ID!
+        title: String!
+        body: String!
+        published: Boolean!
+        author:User!
+    }
 `;
 
 // Resolvers
-
 const resolvers = {
   Query: {
-      users(parent, args, ctx, info){
-          if(!args.query){
-            return users
-          }
-          return users.filter(user =>{
-              return user.name.toLowerCase().includes(args.query.toLowerCase())
-          })
-      },
+    users(parent, args, ctx, info) {
+      if (!args.query) {
+        return users;
+      }
+
+      return users.filter((user) => {
+        return user.name.toLowerCase().includes(args.query.toLowerCase());
+      });
+    },
+    posts(parent, args, ctx, info) {
+      if (!args.query) {
+        return posts;
+      }
+
+      return posts.filter((post) => {
+        const isTitleMatch = post.title
+          .toLowerCase()
+          .includes(args.query.toLowerCase());
+        const isBodyMatch = post.body
+          .toLowerCase()
+          .includes(args.query.toLowerCase());
+        return isTitleMatch || isBodyMatch;
+      });
+    },
     me() {
       return {
-        id: "123",
-        name: "Milan",
-        email: "milan@gmail.com",
-        age: 25,
+        id: "123098",
+        name: "Mike",
+        email: "mike@example.com",
       };
     },
-    film() {
+    post() {
       return {
-        title: "Don",
-        releaseYear: 1980,
-        budget: 50,
+        id: "092",
+        title: "GraphQL 101",
+        body: "",
+        published: false,
       };
     },
-    posts() {
-      return {
-        title: "My First Post",
-        comments: "Hey Nice Post",
-        published: true,
-      };
-    },
-    greeting(parent, args, ctx, info) {
-      if (args.name && args.location) {
-        return "Hello " + args.name + " you stay in " + args.location;
-      } else {
-        return "Hello";
-      }
-    },
-    add(parent, args, ctx, info) {
-      return args.firstNumber + args.secondNumber;
-    },
-    subtract(parent, args, ctx, info) {
-      return args.firstNumber - args.secondNumber;
-    },
-    listofBooks() {
-        return ["Art of Living","Online Writer","The Dark Knight"]
+
+  },
+  Post: {
+    author(parent, args, ctx, info) {
+      return users.find(user =>{
+        return user.id === parent.author
+      })
     },
   },
 };
@@ -113,5 +130,5 @@ const server = new GraphQLServer({
 });
 
 server.start(() => {
-  console.log("The server is Up");
+  console.log("The server is up!");
 });
